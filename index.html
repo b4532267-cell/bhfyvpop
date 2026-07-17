@@ -3,321 +3,749 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EL POP HOST - منصة الاستضافة الذكية</title>
-    <!-- استدعاء Tailwind CSS وخط كايرو -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
+    <title>POP Tube - منصة الفيديوهات التجريبية</title>
     <style>
+        /* --- المتغيرات العامة والألوان --- */
+        :root {
+            --bg-main: #0a0e17;       /* أسود مائل للأزرق الداكن */
+            --bg-card: #121824;       /* أزرق غامق للبطاقات */
+            --bg-header: #070a10;     /* أسود داكن للهيدر */
+            --accent-red: #ff003c;     /* لمسة حمراء احترافية */
+            --accent-blue: #00d2ff;    /* أزرق مضيء للتفاعل */
+            --text-main: #ffffff;
+            --text-muted: #8e9bb0;
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- التنسيقات الأساسية --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #060814;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-top: 80px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        /* تأثير النيون للوجو والأزرار */
-        .neon-text {
-            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3);
+
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .neon-border:hover {
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-            border-color: rgba(6, 182, 212, 0.8);
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
         }
-        /* تأثير الزجاج الشفاف Glassmorphism */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-card);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-red);
+        }
+
+        /* --- الهيدر (Header) --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--bg-header);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+        }
+
+        .search-container {
+            flex: 0 1 500px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 20px;
+            padding-left: 45px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--accent-red), #b3002a);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(255, 0, 60, 0.3);
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 60, 0.5);
+        }
+
+        /* --- شبكة الفيديوهات (Video Grid) --- */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        /* --- بطاقة الفيديو (Video Card) --- */
+        .video-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 210, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* نسبة 16:9 */
+            background-color: #000;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .video-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 12px;
+        }
+
+        .actions-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            transition: var(--transition-smooth);
+        }
+
+        .action-btn:hover {
+            color: var(--text-main);
+        }
+
+        .like-btn.liked {
+            color: var(--accent-red);
+            animation: bounce 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            color: var(--accent-red);
+        }
+
+        /* --- النافذة المنبثقة للرفع (Upload Modal) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 7, 12, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transform: scale(0.9);
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .file-drop-area {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .file-drop-area:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(0, 210, 255, 0.02);
+        }
+
+        .file-drop-area input[type="file"] {
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #0072ff, #00d2ff);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        /* تنبيه الحجم والـ Prototype */
+        .storage-warning {
+            background-color: rgba(255, 0, 60, 0.1);
+            border: 1px solid rgba(255, 0, 60, 0.2);
+            color: #ff4d79;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        /* --- تأثير التحميل (Loading Spinner) --- */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18, 24, 36, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+            z-index: 10;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-red);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 10px;
+        }
+
+        /* --- الأنميشن (Animations) --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* --- شاشات الهواتف (Responsive) --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 0 1rem;
+            }
+            .search-container {
+                flex: 0 1 200px;
+            }
+            .upload-btn span {
+                display: none;
+            }
+            .upload-btn {
+                padding: 10px;
+                border-radius: 50%;
+            }
+            .container {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
-<body class="text-slate-100 min-height-screen overflow-x-hidden">
+<body>
 
-    <!-- ======================================================= -->
-    <!-- 1. الشاشة الرئيسية (LANDING PAGE) -->
-    <!-- ======================================================= -->
-    <div id="landing-page" class="block">
-        <!-- الهيدر -->
-        <nav class="w-full max-w-7xl mx-auto px-6 py-4 flex justify-between items-center border-b border-slate-800/50">
-            <div class="text-2xl font-black text-cyan-400 neon-text tracking-wider">EL POP HOST</div>
-            <button onclick="toggleModal('login-modal', true)" class="px-5 py-2 rounded-full border border-slate-700 hover:border-cyan-400 text-sm font-bold transition-all">تسجيل الدخول</button>
-        </nav>
+    <!-- الهيدر الرئيسي للموقع -->
+    <header>
+        <a href="#" class="logo">POP<span>Tube</span></a>
+        
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="ابحث عن فيديو...">
+        </div>
 
-        <!-- قسم الترحيب (Hero Section) -->
-        <header class="max-w-4xl mx-auto text-center px-6 pt-20 pb-16">
-            <h1 class="text-4xl md:text-6xl font-black leading-tight tracking-wide mb-6">
-                استضيف بوتاتك ومشاريعك في <span class="text-cyan-400 neon-text">60 ثانية</span>
-            </h1>
-            <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                بدون تعقيد سطر الأوامر أو السيرفرات السحابية. ارفع كود الـ Node.js أو Python وسيب الباقي علينا توماتيك. ✨
-            </p>
-            <button onclick="toggleModal('login-modal', true)" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-lg rounded-full shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transform hover:scale-105 transition-all">
-                ابدأ الآن مجاناً ⚡
-            </button>
-        </header>
+        <button class="upload-btn" id="openUploadModal">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            <span>رفع فيديو</span>
+        </button>
+    </header>
 
-        <!-- كروت الخطط والأسعار -->
-        <section class="max-w-6xl mx-auto px-6 pb-24">
-            <h2 class="text-center text-2xl font-bold mb-12 text-slate-400">خطط استضافة مرنة تناسب طموحك</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- كارت المبتدئ -->
-                <div class="glass-card rounded-2xl p-8 neon-border border transition-all duration-300 flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">خطة البوتات</span>
-                        <h3 class="text-xl font-bold mt-4 mb-2">المبتدئ</h3>
-                        <div class="text-3xl font-black my-4 text-cyan-400">50 ج.م <span class="text-sm font-normal text-slate-400">/ شهرياً</span></div>
-                        <ul class="text-slate-400 text-sm space-y-3 my-6 border-t border-slate-800 pt-4">
-                            <li>🟢 تشغيل بوت واتساب أو تليجرام واحد</li>
-                            <li>⚡ 512MB ذاكرة عشوائية (RAM)</li>
-                            <li>💾 5GB مساحة تخزين SSD سريع</li>
-                            <li>🛠️ دعم فني 24 ساعة</li>
-                        </ul>
-                    </div>
-                    <button onclick="toggleModal('login-modal', true)" class="w-full py-3 bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 rounded-xl font-bold transition-all text-sm">اشترك الآن</button>
-                </div>
+    <!-- حاوية الفيديوهات الرئيسية -->
+    <main class="container">
+        <div class="video-grid" id="videoGrid">
+            <!-- الفيديوهات سيتم إنشاؤها هنا عبر الجافا سكريبت -->
+        </div>
+    </main>
 
-                <!-- كارت المحترف -->
-                <div class="glass-card rounded-2xl p-8 border-cyan-500/30 border shadow-xl shadow-cyan-500/5 relative flex flex-col justify-between transform scale-105">
-                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-cyan-500 text-slate-950 text-xs font-black px-4 py-1 rounded-full shadow">الأكثر طلباً 🔥</div>
-                    <div>
-                        <span class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full">خطة المواقع والبوتات</span>
-                        <h3 class="text-xl font-bold mt-4 mb-2">المحترف</h3>
-                        <div class="text-3xl font-black my-4 text-cyan-400">120 ج.م <span class="text-sm font-normal text-slate-400">/ شهرياً</span></div>
-                        <ul class="text-slate-400 text-sm space-y-3 my-6 border-t border-slate-800 pt-4">
-                            <li>🟢 تشغيل حتى 3 مشاريع (مواقع أو بوتات)</li>
-                            <li>⚡ 1.5GB ذاكرة عشوائية (RAM)</li>
-                            <li>💾 20GB مساحة تخزين NVMe فائقة السرعة</li>
-                            <li>🔗 ربط دومين مخصص (Custom Domain)</li>
-                        </ul>
-                    </div>
-                    <button onclick="toggleModal('login-modal', true)" class="w-full py-3 bg-cyan-500 text-slate-950 rounded-xl font-black transition-all text-sm shadow-md shadow-cyan-500/10">اشترك الآن</button>
-                </div>
-
-                <!-- كارت التنين -->
-                <div class="glass-card rounded-2xl p-8 neon-border border transition-all duration-300 flex flex-col justify-between">
-                    <div>
-                        <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full">خطة المنصات الكبيرة</span>
-                        <h3 class="text-xl font-bold mt-4 mb-2">التنين</h3>
-                        <div class="text-3xl font-black my-4 text-cyan-400">300 ج.م <span class="text-sm font-normal text-slate-400">/ شهرياً</span></div>
-                        <ul class="text-slate-400 text-sm space-y-3 my-6 border-t border-slate-800 pt-4">
-                            <li>🟢 مشاريع غير محدودة</li>
-                            <li>⚡ 4GB ذاكرة عشوائية (RAM)</li>
-                            <li>💾 50GB مساحة تخزين متطورة</li>
-                            <li>🚀 ترافيك وباندويدث مفتوح بالكامل</li>
-                        </ul>
-                    </div>
-                    <button onclick="toggleModal('login-modal', true)" class="w-full py-3 bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 rounded-xl font-bold transition-all text-sm">اشترك الآن</button>
-                </div>
-
-            </div>
-        </section>
-    </div>
-
-    <!-- ======================================================= -->
-    <!-- 2. نافذة تسجيل الدخول (LOGIN MODAL) -->
-    <!-- ======================================================= -->
-    <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden justify-center items-center z-50 p-4">
-        <div class="glass-card max-w-md w-full rounded-2xl p-8 relative border border-slate-800">
-            <button onclick="toggleModal('login-modal', false)" class="absolute top-4 left-4 text-slate-400 hover:text-slate-100 font-bold text-lg">✕</button>
-            <div class="text-center mb-6">
-                <h3 class="text-2xl font-black text-cyan-400">تسجيل الدخول للمنصة</h3>
-                <p class="text-xs text-slate-400 mt-2">مرحباً بك في مستقبل الاستضافة الذكية</p>
-            </div>
-            
-            <!-- زرار جوجل السحري المحاكي -->
-            <button onclick="simulateLogin()" class="w-full py-3 px-4 bg-slate-900 border border-slate-700 rounded-xl font-bold hover:bg-slate-800 transition-all flex justify-center items-center gap-3 text-sm mb-6 text-slate-200">
-                <!-- لوجو جوجل -->
-                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                    <path fill="#EA4335" d="M12 5.04c1.64 0 3.12.56 4.28 1.67l3.2-3.2C17.52 1.57 14.96 1 12 1 7.35 1 3.42 3.67 1.5 7.57l3.78 2.93c.89-2.67 3.39-4.46 6.72-4.46z"/>
-                    <path fill="#4285F4" d="M23.49 12.27c0-.82-.07-1.61-.21-2.38H12v4.51h6.44c-.28 1.47-1.11 2.71-2.36 3.55l3.66 2.84c2.14-1.97 3.38-4.88 3.38-8.52z"/>
-                    <path fill="#FBBC05" d="M5.28 14.77c-.23-.69-.36-1.43-.36-2.21s.13-1.52.36-2.21L1.5 7.42C.54 9.34 0 11.48 0 13s.54 3.66 1.5 5.58l3.78-2.81z"/>
-                    <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.92l-3.66-2.84c-1.1.74-2.51 1.18-4.3 1.18-3.33 0-5.83-1.79-6.72-4.46L1.5 16.79C3.42 20.33 7.35 23 12 23z"/>
-                </svg>
-                تسجيل الدخول بواسطة Google
-            </button>
-
-            <div class="relative text-center my-4 border-b border-slate-800">
-                <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0d1527] px-3 text-xs text-slate-500">أو بالحساب الإلكتروني</span>
+    <!-- نافذة رفع الفيديوهات المنبثقة -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <!-- واجهة التحميل عند النشر -->
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p>جاري نشر الفيديو الخاص بك...</p>
             </div>
 
-            <!-- فورم الدخول العادي -->
-            <form onsubmit="event.preventDefault(); simulateLogin();" class="space-y-4 mt-6">
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">البريد الإلكتروني</label>
-                    <input type="email" placeholder="example@gmail.com" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-400 transition-all text-slate-100">
+            <div class="modal-header">
+                <h3>رفع فيديو جديد</h3>
+                <button class="close-modal" id="closeUploadModal">&times;</button>
+            </div>
+
+            <div class="storage-warning">
+                <strong>تنبيه النسخة التجريبية:</strong> نظراً لقيود التخزين في المتصفح المتصفح (localStorage)، سيتم حفظ بيانات الفيديو (العنوان والوصف) دائماً، ولكن ملف الفيديو الفعلي سيعمل حتى تقوم بتحديث الصفحة فقط.
+            </div>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label>اختر ملف الفيديو</label>
+                    <div class="file-drop-area" id="dropArea">
+                        <span id="fileLabel">اضغط هنا واشترِ ملف فيديو من جهازك</span>
+                        <input type="file" id="videoFile" accept="video/*" required>
+                    </div>
                 </div>
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">كلمة المرور</label>
-                    <input type="password" placeholder="••••••••" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-400 transition-all text-slate-100">
+
+                <div class="form-group">
+                    <label>عنوان الفيديو</label>
+                    <input type="text" id="videoTitle" placeholder="أدخل عنواناً جذاباً" required>
                 </div>
-                <button type="submit" class="w-full py-3 bg-cyan-500 text-slate-950 font-black rounded-xl hover:bg-cyan-400 transition-all text-sm mt-2 shadow-md shadow-cyan-500/10">دخول 🚀</button>
+
+                <div class="form-group">
+                    <label>الوصف</label>
+                    <textarea id="videoDesc" rows="3" placeholder="اكتب وصفاً مختصراً للفيديو" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">نشر الفيديو</button>
             </form>
         </div>
     </div>
 
-    <!-- ======================================================= -->
-    <!-- 3. لوحة تحكم المستخدم المحاكية (DASHBOARD PAGE) -->
-    <!-- ======================================================= -->
-    <div id="dashboard-page" class="hidden min-h-screen flex flex-col md:flex-row">
-        <!-- القائمة الجانبية (Sidebar) -->
-        <aside class="w-full md:w-64 bg-slate-900/60 border-l border-slate-800 p-6 flex flex-col justify-between">
-            <div>
-                <div class="text-xl font-black text-cyan-400 neon-text mb-10 tracking-wider">EL POP HOST</div>
-                <nav class="space-y-2">
-                    <a href="#" class="flex items-center gap-3 bg-cyan-500/10 text-cyan-400 px-4 py-2.5 rounded-xl text-sm font-bold">🏠 الرئيسية</a>
-                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all">🖥️ سيرفراتي</a>
-                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all">🛠️ الدعم الفني</a>
-                    <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-slate-200 px-4 py-2.5 rounded-xl text-sm font-bold transition-all">💳 الشحن والمالية</a>
-                </nav>
-            </div>
-            <button onclick="logout()" class="w-full py-2.5 bg-slate-800 text-rose-400 text-sm font-bold rounded-xl hover:bg-rose-500/10 transition-all mt-6">تسجيل الخروج ↩️</button>
-        </aside>
-
-        <!-- المحتوى الرئيسي للوحة التحكم -->
-        <main class="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full">
-            <!-- الهيدر الداخلي -->
-            <div class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-100">أهلاً بك يا مطور 👋</h2>
-                    <p class="text-xs text-slate-400 mt-1">لوحة التحكم السريعة الخاصة بمشاريعك</p>
-                </div>
-                <span class="text-xs bg-cyan-500/10 text-cyan-400 px-4 py-1.5 rounded-full font-bold border border-cyan-500/20">حساب نشط - خطة المحترف</span>
-            </div>
-
-            <!-- عدادات الأداء الحية (Analytics) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <!-- عداد الـ CPU -->
-                <div class="glass-card p-5 rounded-2xl">
-                    <div class="flex justify-between text-xs font-bold text-slate-400 mb-2"><span>المعالج (CPU)</span><span id="cpu-val">24%</span></div>
-                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div id="cpu-bar" class="h-full bg-cyan-500 transition-all duration-1000" style="width: 24%"></div></div>
-                </div>
-                <!-- عداد الـ RAM -->
-                <div class="glass-card p-5 rounded-2xl">
-                    <div class="flex justify-between text-xs font-bold text-slate-400 mb-2"><span>الذاكرة (RAM)</span><span id="ram-val">42%</span></div>
-                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div id="ram-bar" class="h-full bg-purple-500 transition-all duration-1000" style="width: 42%"></div></div>
-                </div>
-                <!-- عداد المساحة -->
-                <div class="glass-card p-5 rounded-2xl">
-                    <div class="flex justify-between text-xs font-bold text-slate-400 mb-2"><span>مساحة التخزين (Disk)</span><span>18%</span></div>
-                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-amber-500" style="width: 18%"></div></div>
-                </div>
-            </div>
-
-            <!-- جدول إدارة المشاريع (Your Projects) -->
-            <div class="glass-card rounded-2xl overflow-hidden mb-8 border border-slate-800/80">
-                <div class="p-5 font-bold border-b border-slate-800 text-slate-300">مشاريعك الحالية</div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-sm">
-                        <thead class="bg-slate-900/40 text-slate-400 text-xs uppercase">
-                            <tr>
-                                <th class="p-4">اسم المشروع</th>
-                                <th class="p-4">النوع</th>
-                                <th class="p-4">الحالة</th>
-                                <th class="p-4 text-center">أزرار التحكم</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800/50">
-                            <!-- البوت الأول -->
-                            <tr>
-                                <td class="p-4 font-bold text-slate-200">EL POP BOT</td>
-                                <td class="p-4 text-slate-400 text-xs">Node.js (WhatsApp)</td>
-                                <td class="p-4"><span id="bot-status" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400">⚡ شغال</span></td>
-                                <td class="p-4 flex justify-center gap-2">
-                                    <button onclick="controlBot('run')" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 p-1.5 rounded-lg text-xs font-bold transition-all">▶️ تشغيل</button>
-                                    <button onclick="controlBot('stop')" class="bg-rose-600 hover:bg-rose-500 text-slate-100 p-1.5 rounded-lg text-xs font-bold transition-all">⏹️ إيقاف</button>
-                                    <button onclick="controlBot('restart')" class="bg-slate-700 hover:bg-slate-600 text-slate-200 p-1.5 rounded-lg text-xs font-bold transition-all">🔄 ريستارت</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- شاشة الكونسول الحية (Live Console Log) -->
-            <div class="glass-card rounded-2xl overflow-hidden border border-slate-800">
-                <div class="p-4 bg-slate-900/50 font-bold text-xs text-slate-400 border-b border-slate-800 flex justify-between items-center">
-                    <span>شاشة كود البوت الحية (Live Console)</span>
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                </div>
-                <div id="console-box" class="p-4 bg-slate-950 text-emerald-400 font-mono text-xs space-y-1 h-40 overflow-y-auto leading-relaxed">
-                    <div>[SYSTEM]: Initializing server container...</div>
-                    <div>[SYSTEM]: Loading node modules... Success.</div>
-                    <div class="text-slate-400">[EL POP BOT]: Server running on active port 3000</div>
-                    <div class="text-cyan-400">[EL POP BOT]: Client is ready and paired with WhatsApp! ✅</div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- ======================================================= -->
-    <!-- 4. جافا سكريبت الذكية للتحكم بالتفاعلات -->
-    <!-- ======================================================= -->
+    <!-- البرمجة والتفاعل (JavaScript) -->
     <script>
-        // دالة فتح وقفل نافذة تسجيل الدخول
-        function toggleModal(id, show) {
-            const modal = document.getElementById(id);
-            modal.style.display = show ? 'flex' : 'none';
-        }
-
-        // دالة محاكاة الدخول ونقلك للـ Dashboard فوراً
-        function simulateLogin() {
-            toggleModal('login-modal', false);
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('dashboard-page').style.display = 'flex';
-            // تشغيل العدادات العشوائية الحية
-            startLiveMetrics();
-        }
-
-        // دالة تسجيل الخروج والعودة للرئيسية
-        function logout() {
-            document.getElementById('dashboard-page').style.display = 'none';
-            document.getElementById('landing-page').style.display = 'block';
-        }
-
-        // التحكم في حالة البوت وكتابة تقرير في الكونسول
-        function controlBot(action) {
-            const statusLabel = document.getElementById('bot-status');
-            const consoleBox = document.getElementById('console-box');
-            const time = new Date().toLocaleTimeString();
-
-            if (action === 'stop') {
-                statusLabel.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-500/10 text-rose-400";
-                statusLabel.innerText = "🛑 متوقف";
-                consoleBox.innerHTML += `<div class="text-rose-400">[${time}] [CONTROL]: Stopping EL POP BOT script... Process exited.</div>`;
-            } else if (action === 'run') {
-                statusLabel.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400";
-                statusLabel.innerText = "⚡ شغال";
-                consoleBox.innerHTML += `<div class="text-emerald-400">[${time}] [CONTROL]: Starting script via server container... active.</div>`;
-            } else if (action === 'restart') {
-                statusLabel.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400";
-                statusLabel.innerText = "🔄 يعيد التشغيل";
-                consoleBox.innerHTML += `<div class="text-amber-400">[${time}] [CONTROL]: Rebooting app instances...</div>`;
-                setTimeout(() => {
-                    statusLabel.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400";
-                    statusLabel.innerText = "⚡ شغال";
-                    consoleBox.innerHTML += `<div class="text-cyan-400">[${time}] [SYSTEM]: App restarted successfully and connected!</div>`;
-                }, 1500);
+        // --- الفيديوهات الافتراضية (مخزنة بسيرفرات عامة لتبدو الواجهة حية فور التشغيل) ---
+        const defaultVideos = [
+            {
+                id: "default-1",
+                title: "تعلّم تصميم واجهات المستخدم الاحترافية بمفهوم الـ Dark Mode",
+                desc: "مقطع تجريبي يستعرض تناسق الألوان الداكنة مع اللمسات المضيئة لبناء تجربة مستخدم تخطف الأنظار.",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                likes: 342,
+                views: 1205,
+                isDefault: true
+            },
+            {
+                id: "default-2",
+                title: "مستقبل تطوير الويب الفاشل بدون سيرفرات!",
+                desc: "كيف تبني بروتوتايب متكامل الأركان يعتمد كلياً على قدرات المتصفح المحلية المتقدمة.",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                likes: 189,
+                views: 840,
+                isDefault: true
             }
-            // سحب الشاشة للأسفل تلقائياً مع السطور الجديدة
-            consoleBox.scrollTop = consoleBox.scrollHeight;
+        ];
+
+        // مصفوفة الجلسة الحالية للاحتفاظ بملفات الفيديو المرفوعة مؤقتاً كـ Blobs
+        let sessionVideoFiles = {};
+
+        // الكائنات المستهدفة من واجهة الـ DOM
+        const videoGrid = document.getElementById('videoGrid');
+        const searchBar = document.getElementById('searchBar');
+        const openModalBtn = document.getElementById('openUploadModal');
+        const closeModalBtn = document.getElementById('closeUploadModal');
+        const modalOverlay = document.getElementById('uploadModal');
+        const uploadForm = document.getElementById('uploadForm');
+        const dropArea = document.getElementById('dropArea');
+        const videoFileInput = document.getElementById('videoFile');
+        const fileLabel = document.getElementById('fileLabel');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // --- إدارة الذاكرة والتخزين (LocalStorage) ---
+        function getVideosData() {
+            const localData = localStorage.getItem('pop_tube_meta');
+            if (!localData) {
+                localStorage.setItem('pop_tube_meta', JSON.stringify(defaultVideos));
+                return defaultVideos;
+            }
+            return JSON.parse(localData);
         }
 
-        // تظبيط تغيير الأرقام والبارات بتاعة الـ RAM والـ CPU عشوائياً عشان الإحساس بالواقعية
-        function startLiveMetrics() {
-            setInterval(() => {
-                if (document.getElementById('dashboard-page').style.display === 'flex') {
-                    const cpu = Math.floor(Math.random() * (45 - 15) + 15);
-                    const ram = Math.floor(Math.random() * (55 - 35) + 35);
-                    
-                    document.getElementById('cpu-val').innerText = cpu + '%';
-                    document.getElementById('cpu-bar').style.width = cpu + '%';
-                    
-                    document.getElementById('ram-val').innerText = ram + '%';
-                    document.getElementById('ram-bar').style.width = ram + '%';
-                }
-            }, 3000);
+        function saveVideosData(data) {
+            localStorage.setItem('pop_tube_meta', JSON.stringify(data));
         }
+
+        // --- بناء وعرض بطاقات الفيديو بالموقع ---
+        function renderVideos(filterText = '') {
+            videoGrid.innerHTML = '';
+            const videos = getVideosData();
+
+            const filteredVideos = videos.filter(video => 
+                video.title.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (filteredVideos.length === 0) {
+                videoGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem;">لا توجد فيديوهات مطابقة للبحث.</p>`;
+                return;
+            }
+
+            filteredVideos.forEach(video => {
+                // تحديد رابط الفيديو: إذا كان افتراضي نأخذ رابطه، وإذا كان مرفوع نأخذ الـ Blob الحالي أو نضع فيديو افتراضي كبديل بعد التحديث
+                let src = video.videoUrl;
+                if (!video.isDefault) {
+                    src = sessionVideoFiles[video.id] ? sessionVideoFiles[video.id] : "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+                }
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.innerHTML = `
+                    <div class="video-wrapper">
+                        <video src="${src}" controls preload="metadata" data-id="${video.id}"></video>
+                    </div>
+                    <div class="video-info">
+                        <h4 class="video-title">${video.title}</h4>
+                        <p class="video-desc">${video.desc}</p>
+                        <div class="video-stats">
+                            <div class="actions-left">
+                                <button class="action-btn like-btn" onclick="handleLike('${video.id}')">
+                                    ❤️ <span class="like-count">${video.likes}</span>
+                                </button>
+                                <button class="action-btn delete-btn" onclick="handleDelete('${video.id}')">
+                                    🗑️ حذف
+                                </button>
+                            </div>
+                            <span class="view-count">👁️ ${video.views} مشاهدة</span>
+                        </div>
+                    </div>
+                `;
+                videoGrid.appendChild(card);
+            });
+
+            // تفعيل نظام عداد المشاهدات عند التشغيل لأول مرة
+            attachVideoPlayEvents();
+        }
+
+        // --- نظام حساب المشاهدات الفريد لكل جلسة تشغيل ---
+        function attachVideoPlayEvents() {
+            const videoElements = document.querySelectorAll('.video-wrapper video');
+            videoElements.forEach(video => {
+                video.addEventListener('play', function() {
+                    if (!this.dataset.hasPlayed) {
+                        this.dataset.hasPlayed = 'true';
+                        const id = this.dataset.id;
+                        incrementViews(id);
+                    }
+                });
+            });
+        }
+
+        function incrementViews(id) {
+            let videos = getVideosData();
+            const index = videos.findIndex(v => v.id === id);
+            if (index !== -1) {
+                videos[index].views += 1;
+                saveVideosData(videos);
+                // تحديث عداد المشاهدة في الواجهة مباشرة بدون رندرة كاملة لتفادي تشنج الفيديو
+                const card = document.querySelector(`video[data-id="${id}"]`).closest('.video-card');
+                card.querySelector('.view-count').innerText = `👁️ ${videos[index].views} مشاهدة`;
+            }
+        }
+
+        // --- نظام الإعجابات والتفاعل ---
+        window.handleLike = function(id) {
+            let videos = getVideosData();
+            const index = videos.findIndex(v => v.id === id);
+            if (index !== -1) {
+                // محاكاة Toggle للإعجاب
+                const btn = document.querySelector(`video[data-id="${id}"]`).closest('.video-card').querySelector('.like-btn');
+                
+                if (btn.classList.contains('liked')) {
+                    videos[index].likes -= 1;
+                    btn.classList.remove('liked');
+                } else {
+                    videos[index].likes += 1;
+                    btn.classList.add('liked');
+                }
+                
+                saveVideosData(videos);
+                btn.querySelector('.like-count').innerText = videos[index].likes;
+            }
+        }
+
+        // --- نظام حذف الفيديو ---
+        window.handleDelete = function(id) {
+            if (confirm("هل أنت متأكد من رغبتك في حذف هذا الفيديو؟")) {
+                let videos = getVideosData();
+                videos = videos.filter(v => v.id !== id);
+                saveVideosData(videos);
+                
+                // حذف الـ Blob من الذاكرة المؤقتة لتوظيف موارد الجهاز
+                if (sessionVideoFiles[id]) {
+                    URL.revokeObjectURL(sessionVideoFiles[id]);
+                    delete sessionVideoFiles[id];
+                }
+                
+                renderVideos(searchBar.value);
+            }
+        }
+
+        // --- التعامل مع المدخلات والـ Modals ---
+        openModalBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
+        closeModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+            uploadForm.reset();
+            fileLabel.innerText = "اضغط هنا واشترِ ملف فيديو من جهازك";
+        });
+
+        // تسهيل عملية اختيار الملفات داخل منطقة السحب
+        dropArea.addEventListener('click', () => videoFileInput.click());
+        videoFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                fileLabel.innerText = `تم اختيار: ${e.target.files[0].name}`;
+            }
+        });
+
+        // --- معالجة نموذج الرفع واستخراج الـ Blob وعمل الـ Loading ---
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const file = videoFileInput.files[0];
+            const title = document.getElementById('videoTitle').value;
+            const desc = document.getElementById('videoDesc').value;
+
+            if (!file) return;
+
+            // إظهار واجهة التحميل الوهمية لتعزيز تجربة المستخدم الاحترافية
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                const uniqueId = 'user-' + Date.now();
+                
+                // تحويل الفيديو إلى Object URL محلي ليعمل بكفاءة وسرعة بالمتصفح
+                const objectUrl = URL.createObjectURL(file);
+                sessionVideoFiles[uniqueId] = objectUrl;
+
+                // إعداد الميتا داتا لحفظها بالـ LocalStorage
+                const newVideoMeta = {
+                    id: uniqueId,
+                    title: title,
+                    desc: desc,
+                    videoUrl: "", // سيبقى فارغاً لأنه محلي وتتم قراءته من مصفوفة الجلسة الحالية
+                    likes: 0,
+                    views: 0,
+                    isDefault: false
+                };
+
+                const currentVideos = getVideosData();
+                currentVideos.unshift(newVideoMeta); // إضافة الفيديو الجديد في البداية
+                saveVideosData(currentVideos);
+
+                // إغلاق المودال وإنهاء واجهة التحميل
+                loadingOverlay.classList.remove('active');
+                modalOverlay.classList.remove('active');
+                uploadForm.reset();
+                fileLabel.innerText = "اضغط هنا واشترِ ملف فيديو من جهازك";
+
+                // إعادة تحديث عرض الفيديوهات بالصفحة الرئيسية
+                renderVideos();
+            }, 1500); // 1.5 ثانية تأثير تحميل واقعي لمظهر المحترفين
+        });
+
+        // --- البحث الفوري السلس وحيوي ---
+        searchBar.addEventListener('input', (e) => {
+            renderVideos(e.target.value);
+        });
+
+        // تشغيل البناء الأولي للموقع عند التحميل لأول مرة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVideos();
+        });
     </script>
 </body>
 </html>
