@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دومينات البوب | Elpop Domains</title>
+    
+    <!-- خط القاهرة من جوجل -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #08090a;
+            --card-bg: #121519;
+            --accent-blue: #007bf1;
+            --glow-blue: #00d2ff;
+            --text-main: #ffffff;
+            --text-sub: #a0a6b1;
+            --border-color: #21262d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header / Navbar */
+        header {
+            background: rgba(18, 21, 25, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 123, 241, 0.4);
+        }
+
+        .logo-area h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .logo-area h1 span {
+            color: var(--glow-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            background: var(--accent-blue);
+            filter: blur(120px);
+            opacity: 0.25;
+            z-index: -1;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .hero h2 span {
+            color: var(--glow-blue);
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .hero p {
+            color: var(--text-sub);
+            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 30px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), #0056b3);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 123, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--glow-blue);
+            color: var(--glow-blue);
+            transform: translateY(-3px);
+        }
+
+        /* Services Section */
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin: 60px 0 30px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--glow-blue);
+            margin: 8px auto 0;
+            border-radius: 2px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 12px;
+            transition: 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-50px 0 0);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            color: var(--glow-blue);
+            margin-bottom: 15px;
+        }
+
+        .service-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        /* Domains List Section */
+        .domains-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .domain-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--glow-blue);
+            direction: ltr;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .domain-item:hover {
+            background: rgba(0, 123, 241, 0.1);
+            border-color: var(--glow-blue);
+            transform: scale(1.03);
+        }
+
+        .domain-item i {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        /* Call To Action Box */
+        .cta-box {
+            background: linear-gradient(135deg, #121519, #0d1117);
+            border: 1px solid var(--accent-blue);
+            padding: 40px 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 70px 0;
+            box-shadow: 0 0 25px rgba(0, 123, 241, 0.15);
+        }
+
+        .cta-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .cta-box p {
+            color: var(--text-sub);
+            margin-bottom: 25px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 25px 0;
+            text-align: center;
+            background: var(--card-bg);
+            margin-top: 40px;
+        }
+
+        .developer-credit {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        .developer-credit span {
+            color: var(--glow-blue);
+            text-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <div class="container nav-content">
+            <div class="logo-area">
+                <img src="https://files.catbox.moe/6mec51.png" alt="دومينات البوب">
+                <h1>دومينات <span>البوب</span></h1>
+            </div>
+            <a href="https://t.me/BELAL_2012_1" target="_blank" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.9rem;">
+                <i class="fa-brands font-awesome-logo-full fa-telegram"></i> اطلب الآن
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>احصل على <span>دومين مجاني</span> لموقعك وربطه بـ GitHub بسهولة!</h2>
+            <p>بنساعدك تطلق موقعك الشخصي أو مشاريعك أونلاين بدومين مجاني وإعدادات كاملة بدون أي تعقيدات تقنية.</p>
+            <div class="btn-group">
+                <a href="https://t.me/BELAL_2012_1" target="_blank" class="btn btn-primary">
+                    <i class="fa-brands fa-telegram"></i> تواصل معي عبر تليجرام
+                </a>
+                <a href="https://t.me/elpop102" target="_blank" class="btn btn-secondary">
+                    <i class="fa-solid fa-bullhorn"></i> قناة العروض والتحديثات
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Services Section -->
+        <h2 class="section-title">خدماتنا</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-link"></i></div>
+                <h3>حجز الدومين وربط جيت هاب</h3>
+                <p>حجز الدومين المجاني واختياره باسمك وربطه أوتوماتيكياً بسرفرات GitHub Pages ليظهر موقعك مباشرة.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>تفعيل شهادة الأمان (SSL)</h3>
+                <p>تأمين موقعك بالكامل وتفعيل بروتوكول HTTPS لتظهر علامة القفل 🔒 وتضمن أمان زوارك.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon"><i class="fa-solid fa-headset"></i></div>
+                <h3>دعم فني واستشارات</h3>
+                <p>متابعة ودعم فني مستمر لحل أي مشاكل في إعدادات الـ DNS وضمان عمل الموقع بكفاءة 100%.</p>
+            </div>
+        </div>
+
+        <!-- Available Domains Section -->
+        <h2 class="section-title">الدومينات المتاحة للمُعاينة</h2>
+        <p style="text-align: center; color: var(--text-sub); margin-bottom: 20px;">يمكنك اختيار النطاق المناسب لمشروعك من القائمة التالية:</p>
+
+        <div class="domains-grid">
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> accesscam.org</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> camdvr.org</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> casacam.net</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> ddnsfree.com</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> flashhub.net</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> freeddns.org</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> gleeze.com</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> loseyourip.com</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> opik.net</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> remotewire.net</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> theworkpc.com</div>
+            <div class="domain-item"><i class="fa-solid fa-globe"></i> xubi.org</div>
+        </div>
+
+        <!-- Call to Action Box -->
+        <div class="cta-box">
+            <h3>جاهز لإطلاق موقعك اليوم؟ 🚀</h3>
+            <p>ارسل لي اسم الدومين اللي عايزه ورابط الـ Repository، وسأقوم بضبط كل الإعدادات لك في دقائق!</p>
+            <a href="https://t.me/BELAL_2012_1" target="_blank" class="btn btn-primary">
+                <i class="fa-brands fa-paper-plane"></i> احجز دومينك الآن
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="developer-credit">المطور: <span>الـــبــــوب</span></p>
+        </div>
+    </footer>
+
+</body>
+</html>
